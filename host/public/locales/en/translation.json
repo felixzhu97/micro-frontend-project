@@ -1,0 +1,35 @@
+{
+  "app": {
+    "title": "Micro Frontend Demo",
+    "theme": {
+      "toggle": "Toggle Theme"
+    },
+    "nav": {
+      "home": "Home",
+      "todo": "Todo",
+      "counter": "Counter"
+    },
+    "loading": "Loading...",
+    "welcome": "Welcome"
+  },
+  "todo": {
+    "title": "Todo List",
+    "add": "Add",
+    "placeholder": "Enter a todo item",
+    "empty": "No todos yet",
+    "completed": "Completed",
+    "uncompleted": "Uncompleted",
+    "all": "All"
+  },
+  "counter": {
+    "title": "Counter",
+    "increment": "Increment",
+    "decrement": "Decrement",
+    "reset": "Reset"
+  },
+  "error": {
+    "title": "Error!",
+    "description": "Sorry, an error occurred while loading the component.",
+    "retry": "Retry"
+  }
+}

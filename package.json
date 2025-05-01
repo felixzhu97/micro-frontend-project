@@ -1,0 +1,16 @@
+{
+  "name": "micro-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "host",
+    "remote"
+  ],
+  "scripts": {
+    "start": "concurrently \"yarn workspace host start\" \"yarn workspace remote start\"",
+    "build": "yarn workspace host build && yarn workspace remote build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

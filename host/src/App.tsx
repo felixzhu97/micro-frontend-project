@@ -1,0 +1,142 @@
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+import { toggleTheme } from "./store/themeSlice";
+import Button from "./components/shared/Button";
+import Card from "./components/shared/Card";
+import LanguageSwitcher from "./components/shared/LanguageSwitcher";
+import { performanceMonitor } from "./utils/performance";
+
+const RemoteButton = React.lazy(() => import("remote/Button"));
+const RemoteTodoList = React.lazy(() => import("remote/TodoList"));
+const RemoteCounter = React.lazy(() => import("remote/Counter"));
+
+const AppContainer = styled.div`
+  padding: ${({ theme }) => theme.spacing.large};
+  min-height: 100vh;
+  background-color: ${({ theme }) => theme.colors.background};
+`;
+
+const Header = styled.header`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${({ theme }) => theme.spacing.large};
+`;
+
+const HeaderControls = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.medium};
+`;
+
+const Navigation = styled.nav`
+  margin-bottom: ${({ theme }) => theme.spacing.large};
+`;
+
+const NavList = styled.ul`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.medium};
+  list-style: none;
+  padding: 0;
+`;
+
+const NavLink = styled(Link)`
+  color: ${({ theme }) => theme.colors.primary};
+  text-decoration: none;
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  padding: ${({ theme }) => theme.spacing.small};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: ${({ theme }) => `${theme.colors.primary}22`};
+  }
+`;
+
+const App: React.FC = () => {
+  const dispatch = useDispatch();
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    // 监控组件加载性能
+    performanceMonitor.startMark("AppMount");
+    return () => {
+      performanceMonitor.endMark("AppMount");
+    };
+  }, []);
+
+  const handleThemeToggle = () => {
+    performanceMonitor.startMark("ThemeToggle");
+    dispatch(toggleTheme());
+    performanceMonitor.endMark("ThemeToggle");
+  };
+
+  return (
+    <Router>
+      <AppContainer>
+        <Header>
+          <h1>{t("app.title")}</h1>
+          <HeaderControls>
+            <LanguageSwitcher />
+            <Button variant="secondary" onClick={handleThemeToggle}>
+              {t("app.theme.toggle")}
+            </Button>
+          </HeaderControls>
+        </Header>
+
+        <Navigation>
+          <NavList>
+            <li>
+              <NavLink to="/">{t("app.nav.home")}</NavLink>
+            </li>
+            <li>
+              <NavLink to="/todo">{t("app.nav.todo")}</NavLink>
+            </li>
+            <li>
+              <NavLink to="/counter">{t("app.nav.counter")}</NavLink>
+            </li>
+          </NavList>
+        </Navigation>
+
+        <React.Suspense
+          fallback={
+            <Card variant="outlined">
+              <p>{t("app.loading")}</p>
+            </Card>
+          }
+        >
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Card title={t("app.welcome")}>
+                  <RemoteButton />
+                </Card>
+              }
+            />
+            <Route
+              path="/todo"
+              element={
+                <Card title={t("todo.title")}>
+                  <RemoteTodoList />
+                </Card>
+              }
+            />
+            <Route
+              path="/counter"
+              element={
+                <Card title={t("counter.title")}>
+                  <RemoteCounter />
+                </Card>
+              }
+            />
+          </Routes>
+        </React.Suspense>
+      </AppContainer>
+    </Router>
+  );
+};
+
+export default App;
