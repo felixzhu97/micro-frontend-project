@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense, startTransition } from "react";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,7 @@ import Button from "./components/shared/Button";
 import Card from "./components/shared/Card";
 import LanguageSwitcher from "./components/shared/LanguageSwitcher";
 import { performanceMonitor } from "./utils/performance";
+import LoadingSpinner from "./components/shared/LoadingSpinner";
 
 const RemoteButton = React.lazy(() => import("remote/Button"));
 const RemoteTodoList = React.lazy(() => import("remote/TodoList"));
@@ -55,6 +56,12 @@ const NavLink = styled(Link)`
   }
 `;
 
+const LoadingFallback = () => (
+  <Card variant="outlined">
+    <LoadingSpinner />
+  </Card>
+);
+
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -68,9 +75,11 @@ const App: React.FC = () => {
   }, []);
 
   const handleThemeToggle = () => {
-    performanceMonitor.startMark("ThemeToggle");
-    dispatch(toggleTheme());
-    performanceMonitor.endMark("ThemeToggle");
+    startTransition(() => {
+      performanceMonitor.startMark("ThemeToggle");
+      dispatch(toggleTheme());
+      performanceMonitor.endMark("ThemeToggle");
+    });
   };
 
   return (
@@ -100,40 +109,40 @@ const App: React.FC = () => {
           </NavList>
         </Navigation>
 
-        <React.Suspense
-          fallback={
-            <Card variant="outlined">
-              <p>{t("app.loading")}</p>
-            </Card>
-          }
-        >
+        <Suspense fallback={<LoadingFallback />}>
           <Routes>
             <Route
               path="/"
               element={
-                <Card title={t("app.welcome")}>
-                  <RemoteButton />
-                </Card>
+                <Suspense fallback={<LoadingFallback />}>
+                  <Card title={t("app.welcome")}>
+                    <RemoteButton />
+                  </Card>
+                </Suspense>
               }
             />
             <Route
               path="/todo"
               element={
-                <Card title={t("todo.title")}>
-                  <RemoteTodoList />
-                </Card>
+                <Suspense fallback={<LoadingFallback />}>
+                  <Card title={t("todo.title")}>
+                    <RemoteTodoList />
+                  </Card>
+                </Suspense>
               }
             />
             <Route
               path="/counter"
               element={
-                <Card title={t("counter.title")}>
-                  <RemoteCounter />
-                </Card>
+                <Suspense fallback={<LoadingFallback />}>
+                  <Card title={t("counter.title")}>
+                    <RemoteCounter />
+                  </Card>
+                </Suspense>
               }
             />
           </Routes>
-        </React.Suspense>
+        </Suspense>
       </AppContainer>
     </Router>
   );

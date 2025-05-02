@@ -1,0 +1,27 @@
+{
+  "app": {
+    "title": "微前端演示",
+    "loading": "加载中...",
+    "welcome": "欢迎使用微前端",
+    "theme": {
+      "toggle": "切换主题"
+    },
+    "nav": {
+      "home": "首页",
+      "todo": "待办事项",
+      "counter": "计数器"
+    }
+  },
+  "todo": {
+    "title": "待办事项"
+  },
+  "counter": {
+    "title": "计数器"
+  },
+  "language": "语言",
+  "switchLanguage": "切换语言",
+  "addTodo": "添加待办",
+  "todoPlaceholder": "输入新的待办事项",
+  "submit": "提交",
+  "reset": "重置"
+}

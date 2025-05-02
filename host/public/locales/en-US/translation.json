@@ -1,0 +1,27 @@
+{
+  "app": {
+    "title": "Micro Frontend Demo",
+    "loading": "Loading...",
+    "welcome": "Welcome to Micro Frontend",
+    "theme": {
+      "toggle": "Toggle Theme"
+    },
+    "nav": {
+      "home": "Home",
+      "todo": "Todo List",
+      "counter": "Counter"
+    }
+  },
+  "todo": {
+    "title": "Todo List"
+  },
+  "counter": {
+    "title": "Counter"
+  },
+  "language": "Language",
+  "switchLanguage": "Switch Language",
+  "addTodo": "Add Todo",
+  "todoPlaceholder": "Enter a new todo",
+  "submit": "Submit",
+  "reset": "Reset"
+}
