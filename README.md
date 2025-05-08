@@ -15,6 +15,15 @@
 │   ├── src/             # 模块源代码
 │   ├── package.json     # 远程模块依赖
 │   └── webpack.config.js # 远程模块webpack配置
+├── docs/                # 项目文档
+│   ├── architecture/    # 架构文档
+│   │   ├── c4_context.puml  # 系统上下文图
+│   │   ├── c4_container.puml # 容器图
+│   │   ├── c4_component.puml # 组件图
+│   │   └── c4_code.puml     # 代码图
+│   ├── API.md          # API文档
+│   ├── CONTRIBUTING.md # 贡献指南
+│   └── DEVELOPMENT.md  # 开发指南
 ```
 
 ## 使用技术
@@ -24,6 +33,12 @@
 - i18n 国际化支持
 - Redux Toolkit 状态管理
 - Styled Components 样式组件
+
+## 架构图查看
+
+1. 安装 PlantUML 插件到 VS Code 或 IntelliJ IDEA
+2. 打开对应的.puml 文件
+3. 使用插件渲染架构图
 
 ## 快速开始
 
