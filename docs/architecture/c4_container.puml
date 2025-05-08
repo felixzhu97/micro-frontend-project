@@ -1,0 +1,21 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title 容器图
+
+System_Boundary(host_app, "主应用容器") {
+    Container(web, "Web应用", "React", "提供核心UI和路由")
+    Container(store, "状态管理", "Redux", "全局状态管理") 
+    Container(i18n, "国际化", "i18next", "多语言支持")
+}
+
+System_Boundary(remote_module, "远程模块容器") {
+    Container(todo, "Todo模块", "React", "待办事项功能")
+    Container(counter, "计数器模块", "React", "计数器功能")
+}
+
+Rel(web, store, "读取/更新", "Redux")
+Rel(web, i18n, "使用", "i18next")
+Rel(web, todo, "动态加载", "Module Federation")
+Rel(web, counter, "动态加载", "Module Federation")
+@enduml

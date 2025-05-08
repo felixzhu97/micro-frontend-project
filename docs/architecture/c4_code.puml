@@ -1,0 +1,22 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title 代码图
+
+Boundary(todo_list, "TodoList组件") {
+    Component(useTodos, "useTodos Hook", "React", "待办状态管理")
+    Component(TodoItem, "TodoItem组件", "React", "单个待办项")
+    Component(Filter, "Filter组件", "React", "待办筛选")
+}
+
+Boundary(counter, "Counter组件") {
+    Component(useCounter, "useCounter Hook", "React", "计数器逻辑")
+    Component(Display, "Display组件", "React", "数字显示")
+    Component(Controls, "Controls组件", "React", "操作按钮")
+}
+
+Rel(TodoItem, useTodos, "使用", "React Hooks")
+Rel(Filter, useTodos, "使用", "React Hooks")
+Rel(Display, useCounter, "使用", "React Hooks")
+Rel(Controls, useCounter, "使用", "React Hooks")
+@enduml

@@ -1,0 +1,21 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title 组件图
+
+Container_Boundary(web_app, "Web应用") {
+    Component(app, "App组件", "React", "根组件")
+    Component(router, "路由组件", "React Router", "页面导航")
+    Component(layout, "布局组件", "React", "页面布局")
+}
+
+Container_Boundary(todo_module, "Todo模块") {
+    Component(todo_list, "TodoList", "React", "待办列表")
+    Component(todo_form, "TodoForm", "React", "新增待办")
+}
+
+Rel(app, router, "使用", "React Router")
+Rel(app, layout, "使用", "React")
+Rel(layout, todo_list, "动态加载", "Module Federation")
+Rel(todo_list, todo_form, "包含", "React Props")
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title 系统上下文图
+
+System_Ext(用户, "用户", "使用系统的人员")
+System_Boundary(micro_frontend, "微前端系统") {
+    System(host, "主应用", "React应用，提供核心功能")
+    System(remote, "远程模块", "独立部署的React模块")
+}
+
+Rel(用户, host, "使用", "HTTP")
+Rel(host, remote, "动态加载", "Module Federation")
+@enduml
