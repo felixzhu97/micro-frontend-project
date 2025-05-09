@@ -8,7 +8,9 @@
   ],
   "scripts": {
     "start": "concurrently \"yarn workspace host start\" \"yarn workspace remote start\"",
-    "build": "yarn workspace host build && yarn workspace remote build && mkdir -p public  && cp remote/dist/* public/ && cp -r host/dist/* public/ && mkdir -p public/locales && cp -r host/public/locales public/locales"
+    "build": "yarn build:remote && yarn build:host",
+    "build:host": "yarn workspace host build && cp -r host/dist/* public/ && mkdir -p public/locales && cp -r host/public/locales public",
+    "build:remote": "yarn workspace remote build && cp -r remote/dist/* public/"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
