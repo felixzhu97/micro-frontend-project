@@ -9,7 +9,7 @@ const remoteUrl =
 
 module.exports = {
   entry: "./src/index.tsx",
-  mode: "development",
+  mode: process.env.NODE_ENV || "development",
   output: {
     publicPath: "auto",
   },

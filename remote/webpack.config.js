@@ -9,8 +9,9 @@ const publicPath =
 
 module.exports = {
   entry: "./src/index.tsx",
-  mode: "development",
+  mode: process.env.NODE_ENV || "development",
   output: {
+    path: path.resolve(__dirname, "dist"),
     publicPath: publicPath,
   },
   devServer: {
