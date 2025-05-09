@@ -2,9 +2,17 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const path = require("path");
 
+const remoteUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://micro-frontend-project-three.vercel.app/remoteEntry.js"
+    : "http://localhost:3001/remoteEntry.js";
+
 module.exports = {
   entry: "./src/index.tsx",
   mode: "development",
+  output: {
+    publicPath: "auto",
+  },
   devServer: {
     port: 3000,
     open: true,
@@ -30,7 +38,7 @@ module.exports = {
     new ModuleFederationPlugin({
       name: "host",
       remotes: {
-        remote: "remote@http://localhost:3001/remoteEntry.js",
+        remote: `remote@${remoteUrl}`,
       },
       shared: {
         react: {
