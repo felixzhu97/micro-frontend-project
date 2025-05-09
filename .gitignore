@@ -7,3 +7,11 @@ node_modules
 .env.local
 .env.development.local
 .env.test.local
+
+*/node_modules
+
+public/
+
+*/build
+
+*/dist
