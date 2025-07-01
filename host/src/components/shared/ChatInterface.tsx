@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useChatStore } from "../../stores/useChatStore";
+import { SecurityUtils } from "../../utils";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import ApiKeySettings from "./ApiKeySettings";
+import PrivacySettings from "./PrivacySettings";
 import LoadingSpinner from "./LoadingSpinner";
 import Button from "./Button";
 
@@ -16,6 +18,7 @@ const ChatContainer = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.medium};
   background-color: ${({ theme }) => theme.colors.background};
   overflow: hidden;
+  margin-bottom: ${({ theme }) => theme.spacing.large};
 `;
 
 const MessagesContainer = styled.div`
@@ -71,6 +74,31 @@ const EmptyStateIcon = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.medium};
 `;
 
+const SecurityIndicator = styled.div<{ isSecure: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.small};
+  background-color: ${({ theme, isSecure }) =>
+    isSecure ? `${theme.colors.success}15` : `${theme.colors.warning}15`};
+  border-left: 3px solid
+    ${({ theme, isSecure }) =>
+      isSecure ? theme.colors.success : theme.colors.warning};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
+  font-size: ${({ theme }) => theme.typography.fontSize?.small || "12px"};
+  color: ${({ theme, isSecure }) =>
+    isSecure ? theme.colors.success : theme.colors.warning};
+
+  &::before {
+    content: "${({ isSecure }) => (isSecure ? "🔒" : "⚠️")}";
+  }
+`;
+
+const SettingsSection = styled.div`
+  margin-bottom: ${({ theme }) => theme.spacing.large};
+`;
+
 const ChatInterface: React.FC = () => {
   const {
     messages,
@@ -83,6 +111,7 @@ const ChatInterface: React.FC = () => {
   } = useChatStore();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const isSecure = SecurityUtils.isSecureContext();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -128,9 +157,16 @@ const ChatInterface: React.FC = () => {
   if (!apiKey) {
     return (
       <div>
-        <div data-testid="api-key-settings">
-          <ApiKeySettings />
-        </div>
+        <SecurityIndicator isSecure={isSecure}>
+          {isSecure ? "安全连接已启用" : "建议使用HTTPS连接以确保数据安全"}
+        </SecurityIndicator>
+
+        <SettingsSection>
+          <div data-testid="api-key-settings">
+            <ApiKeySettings />
+          </div>
+        </SettingsSection>
+
         <ChatContainer>
           <EmptyState>
             <EmptyStateIcon>🔑</EmptyStateIcon>
@@ -138,15 +174,23 @@ const ChatInterface: React.FC = () => {
             <p>配置完成后即可开始与 DeepSeek AI 助手对话</p>
           </EmptyState>
         </ChatContainer>
+        <PrivacySettings />
       </div>
     );
   }
 
   return (
     <div>
-      <div data-testid="api-key-settings">
-        <ApiKeySettings />
-      </div>
+      <SecurityIndicator isSecure={isSecure}>
+        {isSecure ? "安全连接已启用" : "建议使用HTTPS连接以确保数据安全"}
+      </SecurityIndicator>
+
+      <SettingsSection>
+        <div data-testid="api-key-settings">
+          <ApiKeySettings />
+        </div>
+      </SettingsSection>
+
       <ChatContainer>
         <MessagesContainer>
           {messages.length === 0 ? (
@@ -210,6 +254,8 @@ const ChatInterface: React.FC = () => {
           placeholder="请输入您的问题..."
         />
       </ChatContainer>
+
+      <PrivacySettings />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 {
   "app": {
-    "title": "微前端聊天助手",
+    "title": "DeepSeek 聊天助手",
+    "description": "基于微前端架构的智能聊天应用",
     "loading": "加载中...",
     "welcome": "欢迎使用",
     "theme": {
@@ -8,37 +9,119 @@
     },
     "nav": {
       "home": "首页",
-      "chat": "AI聊天",
+      "chat": "AI 聊天",
       "todo": "待办事项",
       "counter": "计数器",
       "remoteChat": "远程聊天"
     }
   },
   "chat": {
-    "title": "DeepSeek AI 助手",
+    "title": "DeepSeek AI 聊天助手",
     "placeholder": "请输入您的问题...",
     "send": "发送",
     "clear": "清空对话",
     "settings": {
       "title": "API 设置",
-      "apiKey": "API Key",
-      "save": "保存",
+      "apiKey": {
+        "title": "API Key 设置",
+        "placeholder": "请输入 DeepSeek API Key",
+        "save": "保存",
+        "success": "API Key 已安全保存！",
+        "invalid": "API Key 格式无效",
+        "required": "请输入 API Key"
+      },
       "help": "请访问 DeepSeek 官网获取 API Key"
+    },
+    "messages": {
+      "empty": "开始对话吧...",
+      "user": "我",
+      "assistant": "DeepSeek",
+      "error": "发送失败"
     }
   },
   "remoteChat": {
     "title": "远程聊天组件"
   },
   "todo": {
-    "title": "待办事项"
+    "title": "待办清单",
+    "placeholder": "添加新的待办事项...",
+    "add": "添加",
+    "filter": {
+      "all": "全部",
+      "active": "进行中",
+      "completed": "已完成"
+    }
   },
   "counter": {
-    "title": "计数器"
+    "title": "计数器",
+    "increment": "增加",
+    "decrement": "减少",
+    "reset": "重置"
   },
   "language": "语言",
   "switchLanguage": "切换语言",
-  "addTodo": "添加待办",
-  "todoPlaceholder": "输入新的待办事项",
   "submit": "提交",
-  "reset": "重置"
+  "reset": "重置",
+  "security": {
+    "title": "隐私与安全设置",
+    "connection": {
+      "secure": "安全连接已启用",
+      "insecure": "建议使用HTTPS连接以确保数据安全"
+    },
+    "storage": {
+      "usage": "存储使用情况",
+      "encrypted": "已加密",
+      "items": "数据项数量"
+    },
+    "actions": {
+      "clearMessages": {
+        "title": "清空聊天记录",
+        "description": "删除所有本地保存的聊天消息，但保留API Key设置",
+        "button": "清空",
+        "confirm": "确认清空聊天记录",
+        "message": "此操作将删除所有聊天消息，但保留您的API Key设置。此操作不可撤销。"
+      },
+      "clearApiKey": {
+        "title": "删除API Key",
+        "description": "移除本地存储的API Key，需要重新配置才能使用聊天功能",
+        "button": "删除",
+        "confirm": "确认删除API Key",
+        "message": "此操作将删除您的API Key，您需要重新配置才能继续使用聊天功能。"
+      },
+      "cleanup": {
+        "title": "清理过期数据",
+        "description": "删除所有过期的本地数据，释放存储空间",
+        "button": "清理",
+        "confirm": "确认清理过期数据",
+        "message": "此操作将删除所有过期的本地数据。正常数据不会受到影响。"
+      },
+      "clearAll": {
+        "title": "清除所有数据",
+        "description": "删除所有本地存储数据，包括API Key、聊天记录和应用设置",
+        "button": "全部清除",
+        "confirm": "确认清除所有数据",
+        "message": "此操作将删除所有本地数据，包括API Key、聊天记录和应用设置。此操作不可撤销，应用将刷新。"
+      },
+      "cancel": "取消",
+      "confirm": "确认"
+    },
+    "validation": {
+      "inputTooLong": "输入内容过长，请限制在2000字符内",
+      "inputEmpty": "输入不能为空",
+      "unsafeContent": "输入包含不安全内容",
+      "rateLimitExceeded": "请求过于频繁，请稍后重试"
+    }
+  },
+  "home": {
+    "title": "欢迎使用 DeepSeek 聊天助手",
+    "subtitle": "基于微前端架构的现代化聊天应用",
+    "features": {
+      "title": "主要功能",
+      "chat": "智能聊天对话",
+      "privacy": "隐私数据保护",
+      "security": "安全加密存储",
+      "responsive": "响应式设计"
+    },
+    "getStarted": "开始使用"
+  }
 }

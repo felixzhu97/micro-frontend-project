@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import { storage, SecurityUtils } from "../utils";
 
 export interface ChatMessage {
   id: string;
@@ -25,19 +26,34 @@ interface ChatActions {
 
 type ChatStore = ChatState & ChatActions;
 
+// 创建限流器，每分钟最多10个请求
+const rateLimiter = SecurityUtils.createRateLimiter(10, 60 * 1000);
+
 export const useChatStore = create<ChatStore>((set, get) => ({
-  // 初始状态
+  // 初始状态 - 优先使用加密存储
   messages: [],
   isLoading: false,
   error: null,
-  apiKey: localStorage.getItem("deepseek_api_key"),
+  apiKey:
+    storage.getSecure("deepseek_api_key") ||
+    localStorage.getItem("deepseek_api_key"),
 
   // Actions
   addUserMessage: (content: string) => {
+    // 验证用户输入
+    const validation = SecurityUtils.validateUserInput(content);
+    if (!validation.isValid) {
+      set({ error: validation.error });
+      return;
+    }
+
+    // 对用户输入进行清理（防XSS）
+    const sanitizedContent = SecurityUtils.sanitizeText(content);
+
     const message: ChatMessage = {
-      id: Date.now().toString(),
+      id: SecurityUtils.generateSecureId(),
       role: "user",
-      content,
+      content: sanitizedContent,
       timestamp: Date.now(),
     };
     set((state) => ({
@@ -46,7 +62,14 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   setApiKey: (key: string) => {
-    localStorage.setItem("deepseek_api_key", key);
+    // 验证API Key格式
+    if (!SecurityUtils.validateApiKey(key)) {
+      set({ error: "API Key 格式无效" });
+      return;
+    }
+
+    // 使用加密存储
+    storage.setSecure("deepseek_api_key", key);
     set({ apiKey: key });
   },
 
@@ -59,9 +82,31 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   sendMessage: async (message: string, apiKey: string) => {
+    // 检查限流
+    if (!rateLimiter()) {
+      set({ error: "请求过于频繁，请稍后重试" });
+      return;
+    }
+
+    // 验证输入
+    const validation = SecurityUtils.validateUserInput(message);
+    if (!validation.isValid) {
+      set({ error: validation.error });
+      return;
+    }
+
+    // 验证API Key
+    if (!SecurityUtils.validateApiKey(apiKey)) {
+      set({ error: "API Key 格式无效，请重新配置" });
+      return;
+    }
+
     set({ isLoading: true, error: null });
 
     try {
+      // 对消息进行清理
+      const sanitizedMessage = SecurityUtils.sanitizeText(message);
+
       const response = await axios.post(
         "https://api.deepseek.com/v1/chat/completions",
         {
@@ -73,7 +118,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
             },
             {
               role: "user",
-              content: message,
+              content: sanitizedMessage,
             },
           ],
           stream: false,
@@ -84,14 +129,24 @@ export const useChatStore = create<ChatStore>((set, get) => ({
           headers: {
             Authorization: `Bearer ${apiKey}`,
             "Content-Type": "application/json",
+            // 添加安全头
+            "X-Content-Type-Options": "nosniff",
+            "X-Frame-Options": "DENY",
+            "X-XSS-Protection": "1; mode=block",
           },
+          timeout: 30000, // 30秒超时
         }
       );
 
+      // 对AI回复进行清理
+      const aiResponseContent = SecurityUtils.sanitizeText(
+        response.data.choices[0].message.content
+      );
+
       const assistantMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
+        id: SecurityUtils.generateSecureId(),
         role: "assistant",
-        content: response.data.choices[0].message.content,
+        content: aiResponseContent,
         timestamp: Date.now(),
       };
 
@@ -100,14 +155,14 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         isLoading: false,
       }));
     } catch (error: any) {
-      console.error("DeepSeek API Error:", error);
+      // 不在控制台输出完整错误（可能包含敏感信息）
+      console.warn("API请求失败");
 
       let errorMessage = "请求失败";
 
       // 处理不同类型的错误
       if (error.response) {
         const status = error.response.status;
-        const errorData = error.response.data;
 
         if (status === 401) {
           errorMessage = "API Key 无效，请检查您的 API Key 是否正确";
@@ -118,25 +173,14 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         } else if (status >= 500) {
           errorMessage = "DeepSeek 服务暂时不可用，请稍后重试";
         } else {
-          // 尝试获取具体错误信息
-          if (errorData) {
-            if (typeof errorData === "string") {
-              errorMessage = errorData;
-            } else if (errorData.error) {
-              if (typeof errorData.error === "string") {
-                errorMessage = errorData.error;
-              } else if (errorData.error.message) {
-                errorMessage = errorData.error.message;
-              }
-            } else if (errorData.message) {
-              errorMessage = errorData.message;
-            }
-          }
+          errorMessage = "请求失败，请稍后重试";
         }
       } else if (error.request) {
         errorMessage = "网络连接失败，请检查您的网络连接";
+      } else if (error.code === "ECONNABORTED") {
+        errorMessage = "请求超时，请稍后重试";
       } else {
-        errorMessage = error.message || "未知错误，请重试";
+        errorMessage = "未知错误，请重试";
       }
 
       set({ error: errorMessage, isLoading: false });

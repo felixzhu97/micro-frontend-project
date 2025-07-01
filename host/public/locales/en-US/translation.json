@@ -1,6 +1,7 @@
 {
   "app": {
-    "title": "Micro Frontend Chat Assistant",
+    "title": "DeepSeek Chat Assistant",
+    "description": "Intelligent chat application based on micro-frontend architecture",
     "loading": "Loading...",
     "welcome": "Welcome",
     "theme": {
@@ -15,30 +16,113 @@
     }
   },
   "chat": {
-    "title": "DeepSeek AI Assistant",
+    "title": "DeepSeek AI Chat Assistant",
     "placeholder": "Enter your question...",
     "send": "Send",
     "clear": "Clear Chat",
     "settings": {
       "title": "API Settings",
-      "apiKey": "API Key",
-      "save": "Save",
+      "apiKey": {
+        "title": "API Key Settings",
+        "placeholder": "Enter DeepSeek API Key",
+        "save": "Save",
+        "success": "API Key saved securely!",
+        "invalid": "Invalid API Key format",
+        "required": "Please enter API Key"
+      },
       "help": "Please visit DeepSeek website to get API Key"
+    },
+    "messages": {
+      "empty": "Start chatting...",
+      "user": "You",
+      "assistant": "DeepSeek",
+      "error": "Send failed"
     }
   },
   "remoteChat": {
     "title": "Remote Chat Component"
   },
   "todo": {
-    "title": "Todo List"
+    "title": "Todo List",
+    "placeholder": "Add a new todo item...",
+    "add": "Add",
+    "filter": {
+      "all": "All",
+      "active": "Active",
+      "completed": "Completed"
+    }
   },
   "counter": {
-    "title": "Counter"
+    "title": "Counter",
+    "increment": "Increment",
+    "decrement": "Decrement",
+    "reset": "Reset"
   },
   "language": "Language",
   "switchLanguage": "Switch Language",
   "addTodo": "Add Todo",
-  "todoPlaceholder": "Enter a new todo",
   "submit": "Submit",
-  "reset": "Reset"
+  "reset": "Reset",
+  "security": {
+    "title": "Privacy & Security Settings",
+    "connection": {
+      "secure": "Secure connection enabled",
+      "insecure": "HTTPS connection recommended for data security"
+    },
+    "storage": {
+      "usage": "Storage usage",
+      "encrypted": "encrypted",
+      "items": "data items"
+    },
+    "actions": {
+      "clearMessages": {
+        "title": "Clear Chat History",
+        "description": "Delete all locally saved chat messages while keeping API Key settings",
+        "button": "Clear",
+        "confirm": "Confirm Clear Chat History",
+        "message": "This will delete all chat messages but keep your API Key settings. This action cannot be undone."
+      },
+      "clearApiKey": {
+        "title": "Delete API Key",
+        "description": "Remove locally stored API Key, reconfiguration required to use chat features",
+        "button": "Delete",
+        "confirm": "Confirm Delete API Key",
+        "message": "This will delete your API Key. You'll need to reconfigure it to continue using chat features."
+      },
+      "cleanup": {
+        "title": "Clean Expired Data",
+        "description": "Delete all expired local data to free up storage space",
+        "button": "Clean",
+        "confirm": "Confirm Clean Expired Data",
+        "message": "This will delete all expired local data. Normal data will not be affected."
+      },
+      "clearAll": {
+        "title": "Clear All Data",
+        "description": "Delete all locally stored data including API Key, chat history, and app settings",
+        "button": "Clear All",
+        "confirm": "Confirm Clear All Data",
+        "message": "This will delete all local data including API Key, chat history, and app settings. This action cannot be undone and the app will refresh."
+      },
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "validation": {
+      "inputTooLong": "Input too long, please limit to 2000 characters",
+      "inputEmpty": "Input cannot be empty",
+      "unsafeContent": "Input contains unsafe content",
+      "rateLimitExceeded": "Too many requests, please try again later"
+    }
+  },
+  "home": {
+    "title": "Welcome to DeepSeek Chat Assistant",
+    "subtitle": "Modern chat application based on micro-frontend architecture",
+    "features": {
+      "title": "Key Features",
+      "chat": "Intelligent chat conversations",
+      "privacy": "Privacy data protection",
+      "security": "Secure encrypted storage",
+      "responsive": "Responsive design"
+    },
+    "getStarted": "Get Started"
+  }
 }

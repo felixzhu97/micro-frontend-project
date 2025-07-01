@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useChatStore } from "../../stores/useChatStore";
+import { SecurityUtils } from "../../utils";
 import Button from "./Button";
 import Input from "./Input";
 import Card from "./Card";
@@ -90,12 +91,12 @@ const ApiKeySettings: React.FC = () => {
     if (!key.trim()) {
       return "API Key 不能为空";
     }
-    if (!key.startsWith("sk-")) {
-      return 'API Key 格式错误，应该以 "sk-" 开头';
+
+    // 使用SecurityUtils进行验证
+    if (!SecurityUtils.validateApiKey(key)) {
+      return 'API Key 格式错误，应该以 "sk-" 开头且长度足够';
     }
-    if (key.length < 20) {
-      return "API Key 长度不足，请检查是否完整复制";
-    }
+
     return "";
   };
 
@@ -120,7 +121,15 @@ const ApiKeySettings: React.FC = () => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    const value = e.target.value;
+
+    // 基础安全验证 - 防止过长输入
+    if (value.length > 200) {
+      setValidationError("输入长度过长");
+      return;
+    }
+
+    setInputValue(value);
     // 清除验证错误和成功消息
     if (validationError) {
       setValidationError("");
@@ -158,6 +167,8 @@ const ApiKeySettings: React.FC = () => {
             placeholder="请输入 DeepSeek API Key (格式: sk-...)"
             onFocus={() => setShowKey(true)}
             onBlur={() => setShowKey(false)}
+            autoComplete="off"
+            spellCheck={false}
           />
           <Button onClick={handleSave} variant="primary">
             保存
@@ -174,7 +185,7 @@ const ApiKeySettings: React.FC = () => {
         {showSuccess && (
           <SuccessMessage>
             <span>✅</span>
-            <span>API Key 保存成功！现在可以开始聊天了</span>
+            <span>API Key 已安全保存！现在可以开始聊天了</span>
           </SuccessMessage>
         )}
 
@@ -189,7 +200,7 @@ const ApiKeySettings: React.FC = () => {
             DeepSeek 官网
           </a>{" "}
           获取 API Key。API Key 格式为
-          "sk-xxx..."，将安全保存在浏览器本地存储中。
+          "sk-xxx..."，将使用加密方式安全保存在浏览器本地存储中。
         </HelpText>
       </Card>
     </SettingsContainer>
