@@ -1,16 +1,33 @@
 {
   "app": {
-    "title": "微前端演示",
+    "title": "微前端聊天助手",
     "loading": "加载中...",
-    "welcome": "欢迎使用微前端",
+    "welcome": "欢迎使用",
     "theme": {
       "toggle": "切换主题"
     },
     "nav": {
       "home": "首页",
+      "chat": "AI聊天",
       "todo": "待办事项",
-      "counter": "计数器"
+      "counter": "计数器",
+      "remoteChat": "远程聊天"
     }
+  },
+  "chat": {
+    "title": "DeepSeek AI 助手",
+    "placeholder": "请输入您的问题...",
+    "send": "发送",
+    "clear": "清空对话",
+    "settings": {
+      "title": "API 设置",
+      "apiKey": "API Key",
+      "save": "保存",
+      "help": "请访问 DeepSeek 官网获取 API Key"
+    }
+  },
+  "remoteChat": {
+    "title": "远程聊天组件"
   },
   "todo": {
     "title": "待办事项"

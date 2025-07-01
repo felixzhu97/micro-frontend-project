@@ -7,12 +7,14 @@ import { toggleTheme } from "./store/themeSlice";
 import Button from "./components/shared/Button";
 import Card from "./components/shared/Card";
 import LanguageSwitcher from "./components/shared/LanguageSwitcher";
+import ChatInterface from "./components/shared/ChatInterface";
 import { performanceMonitor } from "./utils/performance";
 import LoadingSpinner from "./components/shared/LoadingSpinner";
 
 const RemoteButton = React.lazy(() => import("remote/Button"));
 const RemoteTodoList = React.lazy(() => import("remote/TodoList"));
 const RemoteCounter = React.lazy(() => import("remote/Counter"));
+const RemoteChatAssistant = React.lazy(() => import("remote/ChatAssistant"));
 
 const AppContainer = styled.div`
   padding: ${({ theme }) => theme.spacing.large};
@@ -101,10 +103,16 @@ const App: React.FC = () => {
               <NavLink to="/">{t("app.nav.home")}</NavLink>
             </li>
             <li>
+              <NavLink to="/chat">{t("app.nav.chat")}</NavLink>
+            </li>
+            <li>
               <NavLink to="/todo">{t("app.nav.todo")}</NavLink>
             </li>
             <li>
               <NavLink to="/counter">{t("app.nav.counter")}</NavLink>
+            </li>
+            <li>
+              <NavLink to="/remote-chat">{t("app.nav.remoteChat")}</NavLink>
             </li>
           </NavList>
         </Navigation>
@@ -117,6 +125,16 @@ const App: React.FC = () => {
                 <Suspense fallback={<LoadingFallback />}>
                   <Card title={t("app.welcome")}>
                     <RemoteButton />
+                  </Card>
+                </Suspense>
+              }
+            />
+            <Route
+              path="/chat"
+              element={
+                <Suspense fallback={<LoadingFallback />}>
+                  <Card title={t("chat.title")}>
+                    <ChatInterface />
                   </Card>
                 </Suspense>
               }
@@ -137,6 +155,16 @@ const App: React.FC = () => {
                 <Suspense fallback={<LoadingFallback />}>
                   <Card title={t("counter.title")}>
                     <RemoteCounter />
+                  </Card>
+                </Suspense>
+              }
+            />
+            <Route
+              path="/remote-chat"
+              element={
+                <Suspense fallback={<LoadingFallback />}>
+                  <Card title={t("remoteChat.title")}>
+                    <RemoteChatAssistant />
                   </Card>
                 </Suspense>
               }

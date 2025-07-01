@@ -1,0 +1,211 @@
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
+import { RootState, AppDispatch } from "../../store";
+import { addUserMessage, sendMessage, clearError } from "../../store/chatSlice";
+import ChatMessage from "./ChatMessage";
+import ChatInput from "./ChatInput";
+import ApiKeySettings from "./ApiKeySettings";
+import LoadingSpinner from "./LoadingSpinner";
+import Button from "./Button";
+
+const ChatContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+  border: 1px solid
+    ${({ theme }) => theme.colors.border || theme.colors.secondary};
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
+  background-color: ${({ theme }) => theme.colors.background};
+  overflow: hidden;
+`;
+
+const MessagesContainer = styled.div`
+  flex: 1;
+  padding: ${({ theme }) => theme.spacing.medium};
+  overflow-y: auto;
+  background-color: ${({ theme }) =>
+    theme.colors.surface || theme.colors.background};
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: ${({ theme }) => theme.spacing.medium};
+`;
+
+const ErrorContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: ${({ theme }) => theme.spacing.medium};
+  background-color: ${({ theme }) => theme.colors.error};
+  color: white;
+  margin: ${({ theme }) => theme.spacing.small};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  gap: ${({ theme }) => theme.spacing.medium};
+`;
+
+const ErrorMessage = styled.div`
+  flex: 1;
+  line-height: 1.4;
+`;
+
+const ErrorActions = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.small};
+  flex-shrink: 0;
+`;
+
+const EmptyState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: ${({ theme }) => theme.colors.textSecondary || theme.colors.secondary};
+  text-align: center;
+`;
+
+const EmptyStateIcon = styled.div`
+  font-size: 48px;
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
+`;
+
+const ChatInterface: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { messages, isLoading, error, apiKey } = useSelector(
+    (state: RootState) => state.chat
+  );
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSendMessage = async (message: string) => {
+    if (!apiKey) {
+      return;
+    }
+
+    dispatch(addUserMessage(message));
+    try {
+      await dispatch(sendMessage({ message, apiKey })).unwrap();
+    } catch (error) {
+      console.error("发送消息失败:", error);
+    }
+  };
+
+  const handleClearError = () => {
+    dispatch(clearError());
+  };
+
+  const isApiKeyError = (errorMessage: string) => {
+    return (
+      errorMessage.includes("API Key") ||
+      errorMessage.includes("401") ||
+      errorMessage.includes("无效") ||
+      errorMessage.includes("权限")
+    );
+  };
+
+  const scrollToApiKeySettings = () => {
+    const element = document.querySelector('[data-testid="api-key-settings"]');
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  if (!apiKey) {
+    return (
+      <div>
+        <ApiKeySettings />
+        <ChatContainer>
+          <EmptyState>
+            <EmptyStateIcon>🔑</EmptyStateIcon>
+            <h3>请先配置 DeepSeek API Key</h3>
+            <p>配置完成后即可开始与 DeepSeek AI 助手对话</p>
+          </EmptyState>
+        </ChatContainer>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div data-testid="api-key-settings">
+        <ApiKeySettings />
+      </div>
+      <ChatContainer>
+        <MessagesContainer>
+          {messages.length === 0 ? (
+            <EmptyState>
+              <EmptyStateIcon>💬</EmptyStateIcon>
+              <h3>欢迎使用 DeepSeek 聊天助手</h3>
+              <p>发送消息开始对话吧！</p>
+            </EmptyState>
+          ) : (
+            <>
+              {messages.map((message) => (
+                <ChatMessage key={message.id} message={message} />
+              ))}
+              {isLoading && (
+                <LoadingContainer>
+                  <LoadingSpinner />
+                </LoadingContainer>
+              )}
+            </>
+          )}
+          <div ref={messagesEndRef} />
+        </MessagesContainer>
+
+        {error && (
+          <ErrorContainer>
+            <ErrorMessage>
+              <strong>⚠️ 发送失败</strong>
+              <br />
+              {error}
+              {isApiKeyError(error) && (
+                <>
+                  <br />
+                  <small>💡 请检查上方的 API Key 设置是否正确</small>
+                </>
+              )}
+            </ErrorMessage>
+            <ErrorActions>
+              {isApiKeyError(error) && (
+                <Button
+                  onClick={scrollToApiKeySettings}
+                  variant="secondary"
+                  size="small"
+                >
+                  检查设置
+                </Button>
+              )}
+              <Button
+                onClick={handleClearError}
+                variant="secondary"
+                size="small"
+              >
+                关闭
+              </Button>
+            </ErrorActions>
+          </ErrorContainer>
+        )}
+
+        <ChatInput
+          onSendMessage={handleSendMessage}
+          disabled={isLoading || !apiKey}
+          placeholder="请输入您的问题..."
+        />
+      </ChatContainer>
+    </div>
+  );
+};
+
+export default ChatInterface;

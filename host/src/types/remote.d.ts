@@ -1,20 +1,11 @@
 /// <reference types="react" />
 
 declare module "remote/Button" {
-  const Button: React.ComponentType<{
-    onClick?: () => void;
-    children?: React.ReactNode;
-  }>;
+  const Button: React.ComponentType;
   export default Button;
 }
 
 declare module "remote/TodoList" {
-  export interface Todo {
-    id: number;
-    text: string;
-    completed: boolean;
-  }
-
   const TodoList: React.ComponentType;
   export default TodoList;
 }
@@ -22,6 +13,11 @@ declare module "remote/TodoList" {
 declare module "remote/Counter" {
   const Counter: React.ComponentType;
   export default Counter;
+}
+
+declare module "remote/ChatAssistant" {
+  const ChatAssistant: React.ComponentType;
+  export default ChatAssistant;
 }
 
 declare module "*.json" {

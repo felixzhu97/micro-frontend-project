@@ -1,16 +1,33 @@
 {
   "app": {
-    "title": "Micro Frontend Demo",
+    "title": "Micro Frontend Chat Assistant",
     "loading": "Loading...",
-    "welcome": "Welcome to Micro Frontend",
+    "welcome": "Welcome",
     "theme": {
       "toggle": "Toggle Theme"
     },
     "nav": {
       "home": "Home",
-      "todo": "Todo List",
-      "counter": "Counter"
+      "chat": "AI Chat",
+      "todo": "Todo",
+      "counter": "Counter",
+      "remoteChat": "Remote Chat"
     }
+  },
+  "chat": {
+    "title": "DeepSeek AI Assistant",
+    "placeholder": "Enter your question...",
+    "send": "Send",
+    "clear": "Clear Chat",
+    "settings": {
+      "title": "API Settings",
+      "apiKey": "API Key",
+      "save": "Save",
+      "help": "Please visit DeepSeek website to get API Key"
+    }
+  },
+  "remoteChat": {
+    "title": "Remote Chat Component"
   },
   "todo": {
     "title": "Todo List"

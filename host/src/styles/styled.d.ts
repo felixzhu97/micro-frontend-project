@@ -3,13 +3,19 @@ import { ReactNode, ComponentType } from "react";
 
 declare module "styled-components" {
   export interface DefaultTheme extends Record<string, unknown> {
-    // This empty interface declaration helps with type inference
+    mode: string;
     colors: {
       primary: string;
       secondary: string;
       background: string;
       text: string;
-      border: string;
+      error: string;
+      success: string;
+      warning: string;
+      info: string;
+      border?: string;
+      surface?: string;
+      textSecondary?: string;
     };
     spacing: {
       small: string;
@@ -17,8 +23,14 @@ declare module "styled-components" {
       large: string;
     };
     typography: {
+      fontSize: {
+        small: string;
+        medium: string;
+        large: string;
+        xlarge: string;
+      };
       fontWeight: {
-        regular: number;
+        normal: number;
         medium: number;
         bold: number;
       };
@@ -27,6 +39,11 @@ declare module "styled-components" {
       small: string;
       medium: string;
       large: string;
+    };
+    shadows?: {
+      small?: string;
+      medium?: string;
+      large?: string;
     };
   }
 

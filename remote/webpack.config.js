@@ -46,6 +46,7 @@ module.exports = {
         "./Button": "./src/components/Button",
         "./TodoList": "./src/components/TodoList",
         "./Counter": "./src/components/Counter",
+        "./ChatAssistant": "./src/components/ChatAssistant",
       },
       shared: {
         react: {

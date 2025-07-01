@@ -8,6 +8,7 @@
     "@types/react-dom": "^18.2.0",
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26",
+    "axios": "^1.6.0",
     "i18next": "^22.4.15",
     "i18next-browser-languagedetector": "^7.0.1",
     "i18next-http-backend": "^2.2.0",
