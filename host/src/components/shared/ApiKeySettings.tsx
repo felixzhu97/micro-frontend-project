@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { RootState } from "../../store";
-import { setApiKey } from "../../store/chatSlice";
+import { useChatStore } from "../../stores/useChatStore";
 import Button from "./Button";
 import Input from "./Input";
 import Card from "./Card";
@@ -76,8 +74,7 @@ const StatusIndicator = styled.div<{ hasApiKey: boolean }>`
 `;
 
 const ApiKeySettings: React.FC = () => {
-  const dispatch = useDispatch();
-  const { apiKey } = useSelector((state: RootState) => state.chat);
+  const { apiKey, setApiKey } = useChatStore();
   const [inputValue, setInputValue] = useState("");
   const [showKey, setShowKey] = useState(false);
   const [validationError, setValidationError] = useState("");
@@ -113,7 +110,7 @@ const ApiKeySettings: React.FC = () => {
     }
 
     setValidationError("");
-    dispatch(setApiKey(trimmedKey));
+    setApiKey(trimmedKey);
     setShowSuccess(true);
 
     // 3秒后隐藏成功消息

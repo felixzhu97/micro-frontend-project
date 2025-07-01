@@ -1,8 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { RootState, AppDispatch } from "../../store";
-import { addUserMessage, sendMessage, clearError } from "../../store/chatSlice";
+import { useChatStore } from "../../stores/useChatStore";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import ApiKeySettings from "./ApiKeySettings";
@@ -74,10 +72,16 @@ const EmptyStateIcon = styled.div`
 `;
 
 const ChatInterface: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { messages, isLoading, error, apiKey } = useSelector(
-    (state: RootState) => state.chat
-  );
+  const {
+    messages,
+    isLoading,
+    error,
+    apiKey,
+    addUserMessage,
+    sendMessage,
+    clearError,
+  } = useChatStore();
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -93,16 +97,16 @@ const ChatInterface: React.FC = () => {
       return;
     }
 
-    dispatch(addUserMessage(message));
+    addUserMessage(message);
     try {
-      await dispatch(sendMessage({ message, apiKey })).unwrap();
+      await sendMessage(message, apiKey);
     } catch (error) {
       console.error("发送消息失败:", error);
     }
   };
 
   const handleClearError = () => {
-    dispatch(clearError());
+    clearError();
   };
 
   const isApiKeyError = (errorMessage: string) => {
@@ -124,7 +128,9 @@ const ChatInterface: React.FC = () => {
   if (!apiKey) {
     return (
       <div>
-        <ApiKeySettings />
+        <div data-testid="api-key-settings">
+          <ApiKeySettings />
+        </div>
         <ChatContainer>
           <EmptyState>
             <EmptyStateIcon>🔑</EmptyStateIcon>

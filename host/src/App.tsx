@@ -1,9 +1,8 @@
 import React, { useEffect, Suspense, startTransition } from "react";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { toggleTheme } from "./store/themeSlice";
+import { useThemeStore } from "./stores/useThemeStore";
 import Button from "./components/shared/Button";
 import Card from "./components/shared/Card";
 import LanguageSwitcher from "./components/shared/LanguageSwitcher";
@@ -65,7 +64,7 @@ const LoadingFallback = () => (
 );
 
 const App: React.FC = () => {
-  const dispatch = useDispatch();
+  const { toggleTheme } = useThemeStore();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -79,7 +78,7 @@ const App: React.FC = () => {
   const handleThemeToggle = () => {
     startTransition(() => {
       performanceMonitor.startMark("ThemeToggle");
-      dispatch(toggleTheme());
+      toggleTheme();
       performanceMonitor.endMark("ThemeToggle");
     });
   };
