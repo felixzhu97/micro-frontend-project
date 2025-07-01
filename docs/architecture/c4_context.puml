@@ -1,14 +1,29 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
-title 系统上下文图
+title DeepSeek 聊天助手 - 系统上下文图
 
-System_Ext(用户, "用户", "使用系统的人员")
-System_Boundary(micro_frontend, "微前端系统") {
-    System(host, "主应用", "React应用，提供核心功能")
-    System(remote, "远程模块", "独立部署的React模块")
+Person(user, "用户", "通过浏览器使用AI聊天助手")
+
+System_Boundary(system, "微前端聊天助手系统") {
+    System(chat_app, "聊天助手应用", "提供AI对话、安全管理和隐私保护功能")
 }
 
-Rel(用户, host, "使用", "HTTP")
-Rel(host, remote, "动态加载", "Module Federation")
+System_Ext(deepseek_api, "DeepSeek API", "提供大语言模型服务")
+System_Ext(browser_storage, "浏览器存储", "本地数据存储和管理")
+System_Ext(cdn, "CDN服务", "静态资源分发")
+
+Rel(user, chat_app, "使用聊天功能", "HTTPS")
+Rel(user, chat_app, "配置API密钥", "Web界面")
+Rel(user, chat_app, "管理隐私设置", "Web界面")
+
+Rel(chat_app, deepseek_api, "发送聊天请求", "HTTPS API")
+Rel(deepseek_api, chat_app, "返回AI回复", "JSON")
+
+Rel(chat_app, browser_storage, "加密存储数据", "本地加密")
+Rel(browser_storage, chat_app, "读取配置数据", "解密读取")
+
+Rel(chat_app, cdn, "加载静态资源", "HTTPS")
+
+SHOW_LEGEND()
 @enduml

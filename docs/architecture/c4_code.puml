@@ -1,22 +1,64 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
-title 代码图
+title DeepSeek 聊天助手 - 代码图
 
-Boundary(todo_list, "TodoList组件") {
-    Component(useTodos, "useTodos Hook", "React", "待办状态管理")
-    Component(TodoItem, "TodoItem组件", "React", "单个待办项")
-    Component(Filter, "Filter组件", "React", "待办筛选")
+Boundary(chat_module, "聊天模块") {
+    Component(useChatStore, "useChatStore钩子", "Zustand", "聊天状态管理")
+    Component(ChatInterface, "聊天界面组件", "React", "主聊天组件")
+    Component(ChatMessage, "消息组件", "React", "消息气泡组件")
+    Component(ChatInput, "输入组件", "React", "消息输入组件")
+    Component(SecurityIndicator, "安全指示器", "React", "安全状态组件")
 }
 
-Boundary(counter, "Counter组件") {
-    Component(useCounter, "useCounter Hook", "React", "计数器逻辑")
-    Component(Display, "Display组件", "React", "数字显示")
-    Component(Controls, "Controls组件", "React", "操作按钮")
+Boundary(security_module, "安全模块") {
+    Component(validateInput, "输入验证函数", "TypeScript", "验证用户输入")
+    Component(encryptData, "数据加密函数", "XOR算法", "加密敏感数据")
+    Component(decryptData, "数据解密函数", "XOR算法", "解密存储数据")
+    Component(checkRateLimit, "限流检查函数", "TypeScript", "API限流控制")
+    Component(sanitizeHtml, "HTML清理函数", "TypeScript", "清理HTML内容")
 }
 
-Rel(TodoItem, useTodos, "使用", "React Hooks")
-Rel(Filter, useTodos, "使用", "React Hooks")
-Rel(Display, useCounter, "使用", "React Hooks")
-Rel(Controls, useCounter, "使用", "React Hooks")
+Boundary(storage_module, "存储模块") {
+    Component(setSecureItem, "安全存储函数", "LocalStorage", "加密存储数据")
+    Component(getSecureItem, "安全读取函数", "LocalStorage", "解密读取数据")
+    Component(removeExpiredData, "清理过期数据", "TypeScript", "删除过期数据")
+    Component(getStorageUsage, "存储统计函数", "TypeScript", "统计存储使用")
+}
+
+Boundary(api_service, "API服务") {
+    Component(sendMessage, "发送消息函数", "Axios", "发送聊天请求")
+    Component(handleResponse, "响应处理函数", "TypeScript", "处理API响应")
+    Component(errorHandler, "错误处理函数", "TypeScript", "统一错误处理")
+}
+
+Boundary(utils_module, "工具模块") {
+    Component(generateSalt, "盐值生成函数", "Crypto", "生成随机盐值")
+    Component(formatMessage, "消息格式化", "TypeScript", "格式化聊天消息")
+    Component(validateApiKey, "密钥验证函数", "RegEx", "验证API密钥格式")
+}
+
+Rel(ChatInterface, useChatStore, "使用状态")
+Rel(ChatMessage, useChatStore, "读取消息")
+Rel(ChatInput, useChatStore, "发送消息")
+Rel(SecurityIndicator, useChatStore, "显示状态")
+
+Rel(useChatStore, validateInput, "验证输入")
+Rel(useChatStore, checkRateLimit, "检查限流")
+Rel(useChatStore, encryptData, "加密数据")
+Rel(useChatStore, decryptData, "解密数据")
+
+Rel(ChatInput, sanitizeHtml, "清理内容")
+Rel(encryptData, generateSalt, "生成盐值")
+Rel(validateInput, validateApiKey, "验证密钥")
+
+Rel(encryptData, setSecureItem, "存储数据")
+Rel(decryptData, getSecureItem, "读取数据")
+Rel(useChatStore, removeExpiredData, "清理过期")
+
+Rel(useChatStore, sendMessage, "发送请求")
+Rel(sendMessage, handleResponse, "处理响应")
+Rel(handleResponse, errorHandler, "处理错误")
+Rel(handleResponse, formatMessage, "格式化消息")
+
 @enduml

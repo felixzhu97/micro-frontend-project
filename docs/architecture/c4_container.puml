@@ -1,21 +1,40 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-title 容器图
+title DeepSeek 聊天助手 - 容器图
 
-System_Boundary(host_app, "主应用容器") {
-    Container(web, "Web应用", "React", "提供核心UI和路由")
-    Container(store, "状态管理", "Redux", "全局状态管理") 
-    Container(i18n, "国际化", "i18next", "多语言支持")
+Person(user, "用户")
+
+System_Boundary(browser, "浏览器环境") {
+    Container(host_app, "主应用", "React + TypeScript", "聊天界面和路由管理")
+    Container(remote_app, "远程应用", "Module Federation", "可复用组件库")
+    
+    Container(chat_store, "聊天状态", "Zustand", "聊天记录和API配置")
+    Container(theme_store, "主题状态", "Zustand", "主题管理")
+    
+    Container(security_layer, "安全层", "TypeScript", "输入验证和加密")
+    Container(storage_layer, "存储层", "LocalStorage", "加密数据存储")
 }
 
-System_Boundary(remote_module, "远程模块容器") {
-    Container(todo, "Todo模块", "React", "待办事项功能")
-    Container(counter, "计数器模块", "React", "计数器功能")
-}
+System_Ext(deepseek_api, "DeepSeek API", "AI聊天服务")
+System_Ext(i18n_files, "国际化资源", "多语言翻译文件")
 
-Rel(web, store, "读取/更新", "Redux")
-Rel(web, i18n, "使用", "i18next")
-Rel(web, todo, "动态加载", "Module Federation")
-Rel(web, counter, "动态加载", "Module Federation")
+Rel(user, host_app, "使用聊天功能", "HTTPS")
+Rel(user, remote_app, "交互组件", "Module Federation")
+
+Rel(host_app, remote_app, "动态加载组件", "Module Federation")
+Rel(remote_app, host_app, "暴露组件", "webpack")
+
+Rel(host_app, chat_store, "状态管理", "Zustand")
+Rel(host_app, theme_store, "主题切换", "Zustand")
+
+Rel(host_app, security_layer, "安全验证", "TypeScript")
+Rel(chat_store, security_layer, "加密处理", "XOR算法")
+
+Rel(security_layer, storage_layer, "安全存储", "加密")
+Rel(chat_store, storage_layer, "数据持久化", "Storage API")
+
+Rel(chat_store, deepseek_api, "AI对话", "HTTPS API")
+Rel(host_app, i18n_files, "多语言支持", "JSON")
+
 @enduml

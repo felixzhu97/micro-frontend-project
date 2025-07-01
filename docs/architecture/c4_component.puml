@@ -1,21 +1,64 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
-title 组件图
+title DeepSeek 聊天助手 - 组件图
 
-Container_Boundary(web_app, "Web应用") {
-    Component(app, "App组件", "React", "根组件")
-    Component(router, "路由组件", "React Router", "页面导航")
-    Component(layout, "布局组件", "React", "页面布局")
+Container_Boundary(host_app, "主应用") {
+    Component(app, "App组件", "React", "应用根组件")
+    Component(router, "路由管理", "React Router", "页面导航")
+    Component(nav, "导航栏", "React", "主题和语言切换")
 }
 
-Container_Boundary(todo_module, "Todo模块") {
-    Component(todo_list, "TodoList", "React", "待办列表")
-    Component(todo_form, "TodoForm", "React", "新增待办")
+Container_Boundary(chat_ui, "聊天界面") {
+    Component(chat_interface, "聊天界面", "React", "主聊天容器")
+    Component(chat_message, "消息组件", "React", "消息气泡")
+    Component(chat_input, "输入组件", "React", "消息输入框")
+    Component(security_indicator, "安全指示器", "React", "安全状态显示")
 }
 
-Rel(app, router, "使用", "React Router")
-Rel(app, layout, "使用", "React")
-Rel(layout, todo_list, "动态加载", "Module Federation")
-Rel(todo_list, todo_form, "包含", "React Props")
+Container_Boundary(settings_ui, "设置界面") {
+    Component(api_settings, "API设置", "React", "API密钥配置")
+    Component(privacy_settings, "隐私设置", "React", "隐私控制面板")
+}
+
+Container_Boundary(state_layer, "状态管理") {
+    Component(chat_store, "聊天状态", "Zustand", "聊天数据管理")
+    Component(theme_store, "主题状态", "Zustand", "主题管理")
+}
+
+Container_Boundary(security_layer, "安全层") {
+    Component(crypto_utils, "加密工具", "TypeScript", "XOR加密算法")
+    Component(security_utils, "安全工具", "TypeScript", "输入验证")
+    Component(storage_utils, "存储工具", "TypeScript", "安全存储")
+}
+
+Container_Boundary(shared_components, "共享组件") {
+    Component(button, "按钮组件", "React", "通用按钮")
+    Component(input, "输入组件", "React", "输入框")
+    Component(card, "卡片组件", "React", "卡片容器")
+}
+
+Rel(app, router, "使用")
+Rel(app, nav, "包含")
+Rel(router, chat_interface, "路由到")
+Rel(router, api_settings, "路由到")
+Rel(router, privacy_settings, "路由到")
+
+Rel(chat_interface, chat_message, "渲染")
+Rel(chat_interface, chat_input, "包含")
+Rel(chat_interface, security_indicator, "显示")
+
+Rel(chat_interface, chat_store, "状态管理")
+Rel(api_settings, chat_store, "配置存储")
+Rel(privacy_settings, chat_store, "数据控制")
+Rel(nav, theme_store, "主题切换")
+
+Rel(chat_store, security_utils, "安全验证")
+Rel(chat_store, crypto_utils, "数据加密")
+Rel(api_settings, storage_utils, "存储管理")
+
+Rel(chat_interface, shared_components, "使用")
+Rel(api_settings, shared_components, "使用")
+Rel(privacy_settings, shared_components, "使用")
+
 @enduml
